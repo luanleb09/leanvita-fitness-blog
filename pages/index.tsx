@@ -3,6 +3,17 @@ import Head from 'next/head';
 import { siteConfig } from '../lib/config';
 import { getBlogPosts } from '../lib/notion';
 
+type Post = {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+};
+
+interface HomeProps {
+  posts: Post[];
+}
+
 export const getStaticProps: GetStaticProps = async () => {
   const posts = await getBlogPosts(siteConfig.notionPageId);
   return {
@@ -11,7 +22,7 @@ export const getStaticProps: GetStaticProps = async () => {
   };
 };
 
-export default function Home({ posts }) {
+export default function Home({ posts }: HomeProps) {
   return (
     <div>
       <Head>
