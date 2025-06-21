@@ -5,10 +5,12 @@ import { getDatabase, getPostBySlug, getPageBlocks } from '@/lib/notion'
 export const getStaticPaths: GetStaticPaths = async () => {
   const database = await getDatabase()
   const paths = database
-    .filter((page: any) => page.properties.Published.checkbox)
-    .map((page: any) => ({
-      params: { slug: page.properties.Slug.rich_text[0]?.plain_text },
-    }))
+    .filter((page: any) => page.properties.Published?.checkbox)
+    .map((page: any) => {
+      const slug = page.properties.Slug?.rich_text?.[0]?.plain_text
+      return slug ? { params: { slug } } : null
+    })
+    .filter(Boolean) // loại bỏ null
   return { paths, fallback: 'blocking' }
 }
 
@@ -27,7 +29,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 }
 
 export default function Post({ post, blocks }: any) {
-  const title = post.properties.Title.title[0]?.plain_text
+  const title = post.properties.Title?.title?.[0]?.plain_text || 'Untitled'
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -39,23 +41,28 @@ export default function Post({ post, blocks }: any) {
 
       <div className="prose max-w-none">
         {blocks.map((block: any) => {
-          switch (block.type) {
+          const { id, type } = block
+          const text = block[type]?.text || []
+
+          switch (type) {
             case 'heading_1':
-              return <h1 key={block.id}>{block.heading_1.text[0]?.plain_text}</h1>
+              return <h1 key={id}>{text[0]?.plain_text}</h1>
             case 'heading_2':
-              return <h2 key={block.id}>{block.heading_2.text[0]?.plain_text}</h2>
+              return <h2 key={id}>{text[0]?.plain_text}</h2>
             case 'paragraph':
               return (
-                <p key={block.id}>
-                  {block.paragraph.text.map((t: any, i: number) => (
+                <p key={id}>
+                  {text.map((t: any, i: number) => (
                     <span key={i}>{t.plain_text}</span>
                   ))}
                 </p>
               )
             case 'bulleted_list_item':
-              return <li key={block.id}>{block.bulleted_list_item.text[0]?.plain_text}</li>
+              return <li key={id}>{block[type]?.text?.[0]?.plain_text}</li>
+            case 'numbered_list_item':
+              return <li key={id}>{block[type]?.text?.[0]?.plain_text}</li>
             default:
-              return <p key={block.id}>🔹 Unsupported block: {block.type}</p>
+              return <p key={id}>🔹 Unsupported block: {type}</p>
           }
         })}
       </div>
