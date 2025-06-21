@@ -13,8 +13,10 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const slug = params?.slug as string
   const post = await getPostBySlug(slug)
+  console.log('🔍 Post found:', JSON.stringify(post, null, 2))
   if (!post) return { notFound: true }
   const blocks = await getPageBlocks(post.id)
+  console.log('📦 Blocks:', blocks)
   return { props: { post, blocks }, revalidate: 60 }
 }
 
@@ -29,11 +31,11 @@ export default function Post({ post, blocks }: any) {
         {blocks.map((block: any) => {
           switch (block.type) {
             case 'heading_1':
-              return <h1 key={block.id}>{block.heading_1?.text?.[0]?.plain_text}</h1>
+              return <h1 key={block.id}>{block.heading_1?.text?.[0]?.plain_text ?? ''}</h1>
             case 'heading_2':
-              return <h2 key={block.id}>{block.heading_2?.text?.[0]?.plain_text}</h2>
+              return <h2 key={block.id}>{block.heading_2?.text?.[0]?.plain_text ?? ''}</h2>
             case 'heading_3':
-              return <h3 key={block.id}>{block.heading_3?.text?.[0]?.plain_text}</h3>
+              return <h3 key={block.id}>{block.heading_3?.text?.[0]?.plain_text ?? ''}</h3>
             case 'paragraph':
               return (
                 <p key={block.id}>

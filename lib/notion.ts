@@ -16,6 +16,9 @@ export async function getPostBySlug(slug: string) {
   const database = await getDatabase()
   return database.find(
     (page: any) => page.properties.Slug?.rich_text[0]?.plain_text === slug
+	database.forEach((page: any) => {
+  console.log('Slug:', page.properties.Slug)
+	})
   )
 }
 
