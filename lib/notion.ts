@@ -23,3 +23,32 @@ export async function getPageBlocks(pageId: string) {
   const blocks = await notion.blocks.children.list({ block_id: pageId })
   return blocks.results
 }
+
+export async function getBlogPosts() {
+  const response = await notion.databases.query({
+    database_id: databaseId,
+    filter: {
+      property: 'Published',
+      checkbox: {
+        equals: true
+      }
+    },
+    sorts: [
+      {
+        property: 'Date',
+        direction: 'descending'
+      }
+    ]
+  })
+
+  return response.results.map((page: any) => {
+    const props = page.properties
+    return {
+      id: page.id,
+      title: props.Title?.title[0]?.plain_text || 'Untitled',
+      slug: props.Slug?.rich_text[0]?.plain_text || '',
+      excerpt: props.Excerpt?.rich_text[0]?.plain_text || '',
+      date: props.Date?.date?.start || null
+    }
+  })
+}
