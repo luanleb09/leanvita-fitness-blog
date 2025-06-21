@@ -14,11 +14,15 @@ export async function getDatabase() {
 
 export async function getPostBySlug(slug: string) {
   const database = await getDatabase()
+
+  // Debug: in ra slug của từng bài
+  database.forEach((page: any) => {
+    console.log('🔍 Slug:', page.properties.Slug?.rich_text?.[0]?.plain_text)
+  })
+
   return database.find(
-    (page: any) => page.properties.Slug?.rich_text[0]?.plain_text === slug
-	database.forEach((page: any) => {
-  console.log('Slug:', page.properties.Slug)
-	})
+    (page: any) =>
+      page.properties.Slug?.rich_text?.[0]?.plain_text === slug
   )
 }
 
