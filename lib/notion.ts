@@ -57,10 +57,18 @@ export async function getBlogPosts(databaseId: string) {
 // Tìm bài viết theo slug (đã fix lỗi undefined)
 export async function getPostBySlug(slug: string) {
   const database = await getDatabase()
-  return database.find((page: any) => {
-    const pageSlug = page.properties.Slug?.rich_text?.[0]?.plain_text
-    return pageSlug === slug
-  })
+  const page = database.find(
+    (page: any) => page.properties.Slug?.rich_text?.[0]?.plain_text === slug
+  )
+
+  // ID này có dạng abcdefgh123456 → phải chuyển sang UUID chuẩn
+  if (page) {
+    const rawId = page.id
+    const uuid = rawId.replace(/-/g, '')
+    return { ...page, id: uuid }
+  }
+
+  return null
 }
 
 // Lấy các block nội dung chi tiết bài viết
