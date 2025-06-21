@@ -15,7 +15,7 @@ interface HomeProps {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const posts = await getBlogPosts(siteConfig.notionPageId);
+  const posts = await getBlogPosts();
   return {
     props: { posts },
     revalidate: 60
