@@ -1,16 +1,32 @@
-export async function getBlogPosts(pageId: string) {
-  return [
-    {
-      id: 'post-1',
-      title: '3 Easy Tips to Start Losing Weight Today',
-      slug: 'start-losing-weight',
-      excerpt: 'Discover simple yet powerful fat loss habits anyone can start now. Includes Amazon affiliate links to helpful tools.'
+import { Client } from '@notionhq/client'
+
+const notion = new Client({ auth: process.env.NOTION_TOKEN })
+
+export async function getBlogPosts(databaseId: string) {
+  const response = await notion.databases.query({
+    database_id: databaseId,
+    filter: {
+      property: 'Published',
+      checkbox: {
+        equals: true
+      }
     },
-    {
-      id: 'post-2',
-      title: 'Best Exercises to Burn Belly Fat Fast',
-      slug: 'burn-belly-fat-fast',
-      excerpt: 'Target belly fat effectively with these proven exercises. Includes links to recommended ClickBank fitness programs.'
+    sorts: [
+      {
+        property: 'Date',
+        direction: 'descending'
+      }
+    ]
+  })
+
+  return response.results.map((page: any) => {
+    const props = page.properties
+    return {
+      id: page.id,
+      title: props.Title?.title[0]?.plain_text || 'Untitled',
+      slug: props.Slug?.rich_text[0]?.plain_text || '',
+      excerpt: props.Excerpt?.rich_text[0]?.plain_text || '',
+      date: props.Date?.date?.start || null
     }
-  ];
+  })
 }
