@@ -4,13 +4,15 @@ import { getDatabase, getPostBySlug, getPageBlocks } from '@/lib/notion'
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const database = await getDatabase()
-  const paths = database
-    .filter((page: any) => page.properties.Published?.checkbox)
-    .map((page: any) => {
-      const slug = page.properties.Slug?.rich_text?.[0]?.plain_text
-      return slug ? { params: { slug } } : null
-    })
-    .filter(Boolean) // loại bỏ null
+
+  const paths = database.reduce((acc: any[], page: any) => {
+    const slug = page.properties.Slug?.rich_text?.[0]?.plain_text
+    if (slug) {
+      acc.push({ params: { slug } })
+    }
+    return acc
+  }, [])
+
   return { paths, fallback: 'blocking' }
 }
 
