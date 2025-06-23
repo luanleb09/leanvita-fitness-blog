@@ -3,11 +3,6 @@ import Head from 'next/head';
 import { siteConfig } from '../lib/config';
 import { getBlogPosts } from '../lib/notion';
 
-export const getStaticProps: GetStaticProps = async () => {
-  const posts = await getBlogPosts()
-  return { props: { posts }, revalidate: 60 }
-}
-
 
 type Post = {
   id: string;
