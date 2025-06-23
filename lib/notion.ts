@@ -1,4 +1,8 @@
 import { Client, collectPaginatedAPI } from '@notionhq/client'
+import {
+  BlockObjectResponse,
+  PartialBlockObjectResponse
+} from '@notionhq/client/build/src/api-endpoints'
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN })
 const databaseId = process.env.NOTION_DATABASE_ID || ''
@@ -69,10 +73,12 @@ export async function getPageBlocks(pageId: string) {
     page_size: 100
   })
 
-  // Đệ quy nếu block có children
   for (const block of blocks) {
-    if (block.has_children) {
-      block.children = await getPageBlocks(block.id)
+    // Kiểm tra xem block có phải là BlockObjectResponse (đủ dữ liệu và có has_children)
+    if ('has_children' in block && block.has_children) {
+      // Ép kiểu để tránh lỗi
+      const fullBlock = block as BlockObjectResponse
+      fullBlock.children = await getPageBlocks(block.id)
     }
   }
 
