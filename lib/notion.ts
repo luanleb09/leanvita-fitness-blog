@@ -68,17 +68,16 @@ export async function getPostBySlug(slug: string) {
 
 // Lấy toàn bộ blocks của 1 bài viết
 export async function getPageBlocks(pageId: string) {
-  const blocks = await collectPaginatedAPI(notion.blocks.children.list, {
+  const blocks = await notion.blocks.children.list({
     block_id: pageId,
-    page_size: 100
-  })
+    page_size: 100,
+  }).then((res) => res.results)
 
   for (const block of blocks) {
-    // Kiểm tra xem block có phải là BlockObjectResponse (đủ dữ liệu và có has_children)
+    // Chỉ fetch children nếu block là BlockObjectResponse và có has_children
     if ('has_children' in block && block.has_children) {
-      // Ép kiểu để tránh lỗi
-      const fullBlock = block as BlockObjectResponse
-      fullBlock.children = await getPageBlocks(block.id)
+      const childBlocks = await getPageBlocks(block.id)
+      ;(block as BlockObjectResponse & { children?: any[] }).children = childBlocks
     }
   }
 
