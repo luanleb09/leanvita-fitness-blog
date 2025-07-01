@@ -17,6 +17,24 @@
       <p>Ad content here</p>
     </aside>
   </div>
+  <div id="main" style="display: flex; width: 100%;">
+	  <!-- Cột menu (1/5) -->
+	  <aside id="menu" style="width: 20%; padding: 1rem; background: #f0f0f0;">
+		<h3>Tags</h3>
+		<ul id="tag-list"></ul>
+	  </aside>
+
+	  <!-- Cột bài viết (3/5) -->
+	  <section id="posts" style="width: 60%; padding: 1rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+		<!-- Bài viết sẽ được render ở đây -->
+	  </section>
+
+	  <!-- Cột quảng cáo (1/5) -->
+	  <aside style="width: 20%; padding: 1rem; background: #f9f9f9;">
+		<h3>Ad space</h3>
+		<p>📢 Your ad here</p>
+	  </aside>
+	</div>
   <script src="script.js"></script>
 </body>
 </html>
