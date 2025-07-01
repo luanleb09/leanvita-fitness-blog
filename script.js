@@ -1,29 +1,20 @@
+const SHEET_ID = '1m9Fy1dbFL2q3RimNacf8VnqA5CYFGnRv2lul60yHxbQ' // thay bằng của bạn
+const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`
 
-const SHEET_ID = 'YOUR_SHEET_ID';
-const SHEET_URL = `https://opensheet.elk.sh/${SHEET_ID}/posts`;
+async function fetchPosts() {
+  const res = await fetch(SHEET_URL)
+  const text = await res.text()
+  const json = JSON.parse(text.substring(47).slice(0, -2)) // bỏ phần wrapper Google
+  const rows = json.table.rows
 
-fetch(SHEET_URL)
-  .then(res => res.json())
-  .then(data => {
-    const postsContainer = document.getElementById('posts');
-    const menu = document.getElementById('menu');
-    const tags = new Set();
-    data.forEach(post => {
-      const card = document.createElement('div');
-      card.className = 'post-card';
-      card.innerHTML = `
-        <a href="post.html?id=${post.id}">
-          <img src="${post.thumbnail}" alt="" width="100%">
-          <h3>${post.title}</h3>
-          <p>${post.summary}</p>
-        </a>
-      `;
-      postsContainer.appendChild(card);
-      tags.add(post.tag);
-    });
-    tags.forEach(tag => {
-      const item = document.createElement('div');
-      item.textContent = tag;
-      menu.appendChild(item);
-    });
-  });
+  return rows.map(row => {
+    return {
+      id: row.c[0]?.v || '',
+      title: row.c[1]?.v || '',
+      summary: row.c[2]?.v || '',
+      image: row.c[3]?.v || '',
+      contentUrl: row.c[4]?.v || '',
+      tag: row.c[5]?.v || '',
+    }
+  })
+}
