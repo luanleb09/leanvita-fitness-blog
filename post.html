@@ -1,22 +1,66 @@
+<!-- post.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>LeanVita Blog Post</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>Bài viết</title>
+  <style>
+    body { font-family: sans-serif; padding: 1rem; max-width: 800px; margin: auto; }
+    img { max-width: 100%; border-radius: 6px; margin-bottom: 1rem; }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <aside class="sidebar" id="menu"></aside>
-    <main class="content">
-      <div id="post-content">Loading...</div>
-    </main>
-    <aside class="ads">
-      <h3>Advertisement</h3>
-      <p>Ad content here</p>
-    </aside>
-  </div>
-  <script src="post.js"></script>
+  <div id="post"></div>
+
+  <script>
+    const SHEET_ID = '1m9Fy1dbFL2q3RimNacf8VnqA5CYFGnRv2lul60yHxbQ'
+    const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`
+    const CACHE_KEY = 'blog_posts_cache'
+
+    async function fetchPosts() {
+      const cached = localStorage.getItem(CACHE_KEY)
+      if (cached) return JSON.parse(cached)
+
+      const res = await fetch(SHEET_URL)
+      const text = await res.text()
+      const json = JSON.parse(text.substring(47).slice(0, -2))
+      const rows = json.table.rows
+
+      const posts = rows.map(row => ({
+        id: row.c[0]?.v || '',
+        title: row.c[1]?.v || '',
+        summary: row.c[2]?.v || '',
+        image: row.c[3]?.v || '',
+        content: row.c[4]?.v || '',
+        tag: row.c[5]?.v || '',
+        slug: row.c[6]?.v || '',
+      }))
+
+      localStorage.setItem(CACHE_KEY, JSON.stringify(posts))
+      return posts
+    }
+
+    async function renderPost() {
+      const urlParams = new URLSearchParams(window.location.search)
+      const slug = urlParams.get('slug')
+      const posts = await fetchPosts()
+      const post = posts.find(p => p.slug === slug)
+
+      const postContainer = document.getElementById('post')
+      if (!post) {
+        postContainer.innerHTML = `<h2>Bài viết không tồn tại</h2>`
+        return
+      }
+
+      postContainer.innerHTML = `
+        <h1>${post.title}</h1>
+        <img src="${post.image}" alt="${post.title}" />
+        <div>${post.content}</div>
+      `
+    }
+
+    document.addEventListener('DOMContentLoaded', renderPost)
+  </script>
 </body>
 </html>

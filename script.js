@@ -1,4 +1,4 @@
-// script.js (nâng cấp hoàn chỉnh)
+// script.js (nâng cấp hoàn chỉnh với slug URL)
 const SHEET_ID = '1m9Fy1dbFL2q3RimNacf8VnqA5CYFGnRv2lul60yHxbQ'
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`
 const CACHE_KEY = 'blog_posts_cache'
@@ -25,6 +25,7 @@ async function fetchPosts(force = false) {
     image: row.c[3]?.v || '',
     content: row.c[4]?.v || '',
     tag: row.c[5]?.v || '',
+    slug: row.c[6]?.v || '',
   }))
 
   localStorage.setItem(CACHE_KEY, JSON.stringify(posts))
@@ -59,7 +60,7 @@ function renderPosts(posts) {
       <p>${post.summary}</p>
     `
     card.onclick = () => {
-      window.location.href = `post.html?id=${post.id}`
+      window.location.href = `post.html?slug=${post.slug}`
     }
     postsContainer.appendChild(card)
   })
