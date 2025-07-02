@@ -1,56 +1,82 @@
-const SHEET_ID = '1m9Fy1dbFL2q3RimNacf8VnqA5CYFGnRv2lul60yHxbQ' // thay bằng của bạn
+// script.js (nâng cấp hoàn chỉnh)
+const SHEET_ID = '1m9Fy1dbFL2q3RimNacf8VnqA5CYFGnRv2lul60yHxbQ'
 const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`
+const CACHE_KEY = 'blog_posts_cache'
+const CACHE_TIME = 1000 * 60 * 10 // 10 phút
 
-async function fetchPosts() {
+async function fetchPosts(force = false) {
+  const cached = localStorage.getItem(CACHE_KEY)
+  const cachedTime = localStorage.getItem(CACHE_KEY + '_time')
+  const now = Date.now()
+
+  if (cached && cachedTime && now - cachedTime < CACHE_TIME && !force) {
+    return JSON.parse(cached)
+  }
+
   const res = await fetch(SHEET_URL)
   const text = await res.text()
-  const json = JSON.parse(text.substring(47).slice(0, -2)) // bỏ phần wrapper Google
+  const json = JSON.parse(text.substring(47).slice(0, -2))
   const rows = json.table.rows
 
-  return rows.map(row => {
-    return {
-      id: row.c[0]?.v || '',
-      title: row.c[1]?.v || '',
-      summary: row.c[2]?.v || '',
-      image: row.c[3]?.v || '',
-      contentUrl: row.c[4]?.v || '',
-      tag: row.c[5]?.v || '',
-    }
-  })
-}
-document.addEventListener('DOMContentLoaded', async () => {
-  const posts = await fetchPosts()
-  const postsContainer = document.getElementById('posts')
-  const tagList = document.getElementById('tag-list')
+  const posts = rows.map(row => ({
+    id: row.c[0]?.v || '',
+    title: row.c[1]?.v || '',
+    summary: row.c[2]?.v || '',
+    image: row.c[3]?.v || '',
+    content: row.c[4]?.v || '',
+    tag: row.c[5]?.v || '',
+  }))
 
-  // Lọc danh sách tag duy nhất
+  localStorage.setItem(CACHE_KEY, JSON.stringify(posts))
+  localStorage.setItem(CACHE_KEY + '_time', now)
+  return posts
+}
+
+function renderTags(posts) {
+  const tagList = document.getElementById('tag-list')
   const uniqueTags = [...new Set(posts.map(p => p.tag).filter(Boolean))]
+
+  tagList.innerHTML = ''
   uniqueTags.forEach(tag => {
     const li = document.createElement('li')
     li.textContent = tag
+    li.style.cursor = 'pointer'
+    li.onclick = () => renderPosts(posts.filter(p => p.tag === tag))
     tagList.appendChild(li)
   })
+}
 
-  // Render bài viết
+function renderPosts(posts) {
+  const postsContainer = document.getElementById('posts')
+  postsContainer.innerHTML = ''
+
   posts.forEach(post => {
     const card = document.createElement('div')
-    card.style.border = '1px solid #ccc'
-    card.style.padding = '1rem'
-    card.style.borderRadius = '8px'
-    card.style.background = '#fff'
-    card.style.cursor = 'pointer'
-
+    card.className = 'post-card'
     card.innerHTML = `
-      <img src="${post.image}" alt="${post.title}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 6px;" />
-      <h4 style="margin-top: 0.5rem">${post.title}</h4>
+      <img src="${post.image}" alt="${post.title}" />
+      <h4>${post.title}</h4>
       <p>${post.summary}</p>
     `
-
-    // Click để mở bài viết
-    card.addEventListener('click', () => {
-      window.location.href = post.contentUrl
-    })
-
+    card.onclick = () => {
+      window.location.href = `post.html?id=${post.id}`
+    }
     postsContainer.appendChild(card)
   })
+}
+
+function setupSearch(posts) {
+  const input = document.getElementById('search-input')
+  input.addEventListener('input', () => {
+    const keyword = input.value.toLowerCase()
+    const filtered = posts.filter(post => post.title.toLowerCase().includes(keyword) || post.summary.toLowerCase().includes(keyword))
+    renderPosts(filtered)
+  })
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  const posts = await fetchPosts()
+  renderTags(posts)
+  renderPosts(posts)
+  setupSearch(posts)
 })
