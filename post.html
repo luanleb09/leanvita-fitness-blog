@@ -3,85 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Blog Post</title>
-  <style>
-    body { font-family: sans-serif; margin: 2rem; background: #f9f9f9; color: #333; }
-    .post-container { background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
-    .post-title { font-size: 2rem; margin-bottom: 1rem; }
-    .post-date { font-size: 0.9rem; color: #888; margin-bottom: 2rem; }
-    .post-content img { max-width: 100%; height: auto; }
-  </style>
+  <title>Bài viết</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="post-container">
-    <h1 class="post-title" id="post-title"></h1>
-    <div class="post-date" id="post-date"></div>
-    <div id="post-content" class="post-content"></div>
+  <div class="container">
+    <aside class="left">
+      <ul id="tag-list"></ul>
+    </aside>
+
+    <main class="middle">
+      <h1 id="post-title"></h1>
+      <div id="post-content">Đang tải nội dung...</div>
+    </main>
+
+    <aside class="right">
+      <div class="ad-placeholder">Quảng cáo</div>
+    </aside>
   </div>
 
-  <script>
-    const SHEET_ID = '1m9Fy1dbFL2q3RimNacf8VnqA5CYFGnRv2lul60yHxbQ';
-    const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
-
-    const getSlugFromUrl = () => {
-      const params = new URLSearchParams(window.location.search);
-      return params.get('slug');
-    };
-
-    async function fetchPosts() {
-      const res = await fetch(SHEET_URL);
-      const text = await res.text();
-      const json = JSON.parse(text.substring(47).slice(0, -2));
-      const rows = json.table.rows;
-
-      return rows.map(row => ({
-			id: row.c[0]?.v || '',
-		  title: row.c[1]?.v || '',
-		  slug: row.c[2]?.v || '', // cập nhật đúng slug
-		  image: row.c[3]?.v || '',
-		  content: row.c[4]?.v || '',
-		  date: row.c[5]?.v || '',
-		  tag: row.c[6]?.v || '',
-      }));
-    }
-
-    async function fetchGoogleDocsHTML(docUrl) {
-      const match = docUrl.match(/\/d\/([a-zA-Z0-9-_]+)/);
-      if (!match) return '<p>Invalid Google Docs URL.</p>';
-      const docId = match[1];
-      const exportUrl = `https://docs.google.com/document/d/${docId}/export?format=html`;
-      const res = await fetch(exportUrl);
-      return await res.text();
-    }
-
-    document.addEventListener('DOMContentLoaded', async () => {
-	  const urlParams = new URLSearchParams(window.location.search)
-	  const slug = urlParams.get('slug')
-
-	  const posts = await fetchPosts()
-	  const post = posts.find(p => p.slug === slug)
-
-	  if (!post) {
-		document.getElementById('post-content').innerHTML = '<p>Không tìm thấy bài viết.</p>'
-		return
-	  }
-
-	  document.title = post.title
-	  document.getElementById('post-title').textContent = post.title
-	  document.getElementById('post-date').textContent = post.date
-
-	  // Lấy nội dung từ Google Docs nếu là URL hợp lệ
-	  if (post.content.includes('docs.google.com')) {
-		const iframe = document.createElement('iframe')
-		iframe.src = post.content.replace('/edit', '/preview')
-		iframe.width = '100%'
-		iframe.height = '600'
-		iframe.style.border = 'none'
-		document.getElementById('post-content').appendChild(iframe)
-	  } else {
-		document.getElementById('post-content').innerHTML = `<p>${post.content}</p>`
-	  }
-	});
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>

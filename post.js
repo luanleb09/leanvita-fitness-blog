@@ -16,3 +16,40 @@ fetch(SHEET_URL)
       `;
     }
   });
+ async function fetchAndRenderPost() {
+  const params = new URLSearchParams(window.location.search)
+  const slug = params.get('slug')
+
+  if (!slug) {
+    document.getElementById('post-content').innerText = 'Không tìm thấy slug!'
+    return
+  }
+
+  const posts = await fetchPosts()
+  const post = posts.find(p => p.slug === slug)
+
+  if (!post) {
+    document.getElementById('post-content').innerText = 'Không tìm thấy bài viết!'
+    return
+  }
+
+  // Cập nhật tiêu đề
+  document.getElementById('post-title').innerText = post.title
+
+  // Gọi nội dung từ Google Docs (HTML)
+  const docUrl = post.content
+  const htmlUrl = docUrl.replace('/edit', '/export?format=html')
+
+  try {
+    const res = await fetch(htmlUrl)
+    const html = await res.text()
+    document.getElementById('post-content').innerHTML = html
+  } catch (err) {
+    document.getElementById('post-content').innerText = 'Lỗi tải nội dung.'
+    console.error(err)
+  }
+}
+
+if (window.location.pathname.includes('post.html')) {
+  fetchAndRenderPost()
+}
