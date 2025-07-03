@@ -1,45 +1,38 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Bài viết</title>
+  <title>Blog Post</title>
   <style>
-    body {
-      font-family: sans-serif;
-      padding: 2rem;
-      max-width: 800px;
-      margin: auto;
-      background: #f9f9f9;
-    }
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-    img {
-      max-width: 100%;
-      margin: 1rem 0;
-      border-radius: 6px;
-    }
-    p {
-      line-height: 1.6;
-      margin-bottom: 1rem;
-    }
+    body { font-family: sans-serif; margin: 2rem; background: #f9f9f9; color: #333; }
+    .post-container { background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 0 5px rgba(0,0,0,0.1); max-width: 800px; margin: auto; }
+    .post-title { font-size: 2rem; margin-bottom: 1rem; }
+    .post-date { font-size: 0.9rem; color: #888; margin-bottom: 2rem; }
+    .post-content img { max-width: 100%; height: auto; }
   </style>
 </head>
 <body>
-  <h1 id="post-title">Đang tải bài viết...</h1>
-  <div id="post-container"></div>
+  <div class="post-container">
+    <h1 class="post-title" id="post-title"></h1>
+    <div class="post-date" id="post-date"></div>
+    <div id="post-content" class="post-content"></div>
+  </div>
 
   <script>
-    const SHEET_ID = '1m9Fy1dbFL2q3RimNacf8VnqA5CYFGnRv2lul60yHxbQ'
-    const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`
+    const SHEET_ID = '1m9Fy1dbFL2q3RimNacf8VnqA5CYFGnRv2lul60yHxbQ';
+    const SHEET_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+
+    const getSlugFromUrl = () => {
+      const params = new URLSearchParams(window.location.search);
+      return params.get('slug');
+    };
 
     async function fetchPosts() {
-      const res = await fetch(SHEET_URL)
-      const text = await res.text()
-      const json = JSON.parse(text.substring(47).slice(0, -2))
-      const rows = json.table.rows
+      const res = await fetch(SHEET_URL);
+      const text = await res.text();
+      const json = JSON.parse(text.substring(47).slice(0, -2));
+      const rows = json.table.rows;
 
       return rows.map(row => ({
         title: row.c[0]?.v || '',
@@ -47,76 +40,35 @@
         thumbnail: row.c[2]?.v || '',
         content_url: row.c[3]?.v || '',
         date: row.c[4]?.v || '',
-        tags: row.c[5]?.v || '',
-      }))
+        tag: row.c[5]?.v || '',
+      }));
     }
 
-    async function fetchGoogleDocContent(docId, apiKey) {
-      const res = await fetch(`https://docs.googleapis.com/v1/documents/${docId}?key=${apiKey}`)
-      return await res.json()
+    async function fetchGoogleDocsHTML(docUrl) {
+      const match = docUrl.match(/\/d\/([a-zA-Z0-9-_]+)/);
+      if (!match) return '<p>Invalid Google Docs URL.</p>';
+      const docId = match[1];
+      const exportUrl = `https://docs.google.com/document/d/${docId}/export?format=html`;
+      const res = await fetch(exportUrl);
+      return await res.text();
     }
 
-    function renderGoogleDoc(doc) {
-      const container = document.getElementById('post-container')
-      const elements = doc.body.content
-      container.innerHTML = ''
-
-      elements.forEach(el => {
-        if (el.paragraph) {
-          const p = document.createElement('p')
-          el.paragraph.elements.forEach(e => {
-            const run = e.textRun
-            if (run?.content?.trim()) {
-              const span = document.createElement('span')
-              if (run.textStyle?.bold) span.style.fontWeight = 'bold'
-              if (run.textStyle?.italic) span.style.fontStyle = 'italic'
-              span.textContent = run.content
-              p.appendChild(span)
-            }
-          })
-          container.appendChild(p)
-        }
-
-        if (el.inlineObjectElement) {
-          const objectId = el.inlineObjectElement.inlineObjectId
-          const inlineObj = doc.inlineObjects?.[objectId]
-          const imgSrc = inlineObj?.inlineObjectProperties?.embeddedObject?.imageProperties?.contentUri
-
-          if (imgSrc) {
-            const img = document.createElement('img')
-            img.src = imgSrc
-            container.appendChild(img)
-          }
-        }
-      })
-    }
-
-    (async () => {
-      const urlParams = new URLSearchParams(window.location.search)
-      const slug = urlParams.get('slug')
-
-      const posts = await fetchPosts()
-      const post = posts.find(p => p.slug === slug)
+    document.addEventListener('DOMContentLoaded', async () => {
+      const slug = getSlugFromUrl();
+      const posts = await fetchPosts();
+      const post = posts.find(p => p.slug === slug);
 
       if (!post) {
-        document.getElementById('post-title').textContent = 'Bài viết không tồn tại'
-        return
+        document.getElementById('post-content').innerHTML = '<p>Không tìm thấy bài viết.</p>';
+        return;
       }
 
-      document.getElementById('post-title').textContent = post.title
+      document.getElementById('post-title').textContent = post.title;
+      document.getElementById('post-date').textContent = `Ngày đăng: ${post.date}`;
 
-      const match = post.content_url.match(/\/document\/d\/([a-zA-Z0-9-_]+)/)
-      const docId = match?.[1]
-
-      if (!docId) {
-        document.getElementById('post-container').innerHTML = '<p>Không tìm thấy Google Docs hợp lệ.</p>'
-        return
-      }
-
-      const API_KEY = 'AIzaSyBn1JdbdhHuyb6vH6JugkBhKpmkbpK9tvs' // 👈 Thay bằng Google API Key thật
-      const doc = await fetchGoogleDocContent(docId, API_KEY)
-      renderGoogleDoc(doc)
-    })()
+      const html = await fetchGoogleDocsHTML(post.content_url);
+      document.getElementById('post-content').innerHTML = html;
+    });
   </script>
 </body>
 </html>
