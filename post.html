@@ -35,12 +35,13 @@
       const rows = json.table.rows;
 
       return rows.map(row => ({
-        title: row.c[0]?.v || '',
-        slug: row.c[1]?.v || '',
-        thumbnail: row.c[2]?.v || '',
-        content_url: row.c[3]?.v || '',
-        date: row.c[4]?.v || '',
-        tag: row.c[5]?.v || '',
+			id: row.c[0]?.v || '',
+		  title: row.c[1]?.v || '',
+		  slug: row.c[2]?.v || '', // cập nhật đúng slug
+		  image: row.c[3]?.v || '',
+		  content: row.c[4]?.v || '',
+		  date: row.c[5]?.v || '',
+		  tag: row.c[6]?.v || '',
       }));
     }
 
@@ -54,21 +55,33 @@
     }
 
     document.addEventListener('DOMContentLoaded', async () => {
-      const slug = getSlugFromUrl();
-      const posts = await fetchPosts();
-      const post = posts.find(p => p.slug === slug);
+	  const urlParams = new URLSearchParams(window.location.search)
+	  const slug = urlParams.get('slug')
 
-      if (!post) {
-        document.getElementById('post-content').innerHTML = '<p>Không tìm thấy bài viết.</p>';
-        return;
-      }
+	  const posts = await fetchPosts()
+	  const post = posts.find(p => p.slug === slug)
 
-      document.getElementById('post-title').textContent = post.title;
-      document.getElementById('post-date').textContent = `Ngày đăng: ${post.date}`;
+	  if (!post) {
+		document.getElementById('post-content').innerHTML = '<p>Không tìm thấy bài viết.</p>'
+		return
+	  }
 
-      const html = await fetchGoogleDocsHTML(post.content_url);
-      document.getElementById('post-content').innerHTML = html;
-    });
+	  document.title = post.title
+	  document.getElementById('post-title').textContent = post.title
+	  document.getElementById('post-date').textContent = post.date
+
+	  // Lấy nội dung từ Google Docs nếu là URL hợp lệ
+	  if (post.content.includes('docs.google.com')) {
+		const iframe = document.createElement('iframe')
+		iframe.src = post.content.replace('/edit', '/preview')
+		iframe.width = '100%'
+		iframe.height = '600'
+		iframe.style.border = 'none'
+		document.getElementById('post-content').appendChild(iframe)
+	  } else {
+		document.getElementById('post-content').innerHTML = `<p>${post.content}</p>`
+	  }
+	});
   </script>
 </body>
 </html>

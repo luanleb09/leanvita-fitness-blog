@@ -19,14 +19,14 @@ async function fetchPosts(force = false) {
   const rows = json.table.rows
 
   const posts = rows.map(row => ({
-    id: row.c[0]?.v || '',
-    title: row.c[1]?.v || '',
-    summary: row.c[2]?.v || '',
-    image: row.c[3]?.v || '',
-    content: row.c[4]?.v || '',
-    tag: row.c[5]?.v || '',
-    slug: row.c[6]?.v || '',
-  }))
+	  id: row.c[0]?.v || '',
+	  title: row.c[1]?.v || '',
+	  slug: row.c[2]?.v || '', // cập nhật đúng slug
+	  image: row.c[3]?.v || '',
+	  content: row.c[4]?.v || '',
+	  date: row.c[5]?.v || '',
+	  tag: row.c[6]?.v || '',
+	}))
 
   localStorage.setItem(CACHE_KEY, JSON.stringify(posts))
   localStorage.setItem(CACHE_KEY + '_time', now)
@@ -60,7 +60,7 @@ function renderPosts(posts) {
       <p>${post.summary}</p>
     `
     card.onclick = () => {
-      window.location.href = `post.html?slug=${post.slug}`
+      window.location.href = `post.html?slug=${encodeURIComponent(post.slug)}`
     }
     postsContainer.appendChild(card)
   })
