@@ -81,3 +81,38 @@ document.addEventListener('DOMContentLoaded', async () => {
   renderPosts(posts)
   setupSearch(posts)
 })
+// Nếu đang ở trang post.html thì hiển thị nội dung chi tiết
+if (window.location.pathname.includes('post.html')) {
+  (async () => {
+    const params = new URLSearchParams(window.location.search)
+    const slug = params.get('slug')
+
+    if (!slug) {
+      document.getElementById('post-content').innerText = 'Không tìm thấy slug!'
+      return
+    }
+
+    const posts = await fetchPosts()
+    const post = posts.find(p => p.slug === slug)
+
+    if (!post) {
+      document.getElementById('post-content').innerText = 'Không tìm thấy bài viết!'
+      return
+    }
+
+    document.getElementById('post-title').innerText = post.title
+
+    // Load nội dung từ Google Docs ở dạng HTML
+    const docUrl = post.content
+    const htmlUrl = docUrl.replace('/edit', '/export?format=html')
+
+    try {
+      const res = await fetch(htmlUrl)
+      const html = await res.text()
+      document.getElementById('post-content').innerHTML = html
+    } catch (err) {
+      document.getElementById('post-content').innerText = 'Lỗi khi tải nội dung bài viết.'
+      console.error(err)
+    }
+  })()
+}
