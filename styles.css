@@ -11,6 +11,7 @@ body {
 }
 .sidebar-left {
   flex: 1;
+  width: 10%;
   max-width: 20%;
   background: #f9f9f9;
   padding: 1rem;
@@ -18,13 +19,14 @@ body {
 }
 .sidebar-right {
   flex: 1;
+  width: 10%;
   max-width: 20%;
   background: #f9f9f9;
   padding: 1rem;
   border-left: 1px solid #ddd;
 }
 .main-content {
-  width: 60%;
+  width: 80%;
   padding: 1rem;
   background: #fff;
 }
