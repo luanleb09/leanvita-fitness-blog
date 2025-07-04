@@ -37,8 +37,7 @@ body {
 /* Sidebar trái - tag/menu */
 .sidebar-left {
   flex: 1;
-  max-width: 20%;
-  display: block;
+  max-width: 20%;;
   background: #f9f9f9;
   padding: 1rem;
   border-right: 1px solid #ddd;
@@ -48,7 +47,6 @@ body {
 .main-content {
   flex: 3;
   background: #fff;
-  display: block;
   padding: 1rem;
   border-radius: 6px;
   box-shadow: 0 0 4px rgba(0,0,0,0.05);
@@ -58,7 +56,6 @@ body {
 .sidebar-right {
   flex: 1;
   max-width: 20%;
-  display: block;
   background: #f9f9f9;
   padding: 1rem;
   border-left: 1px solid #ddd;
