@@ -37,3 +37,16 @@ body {
     width: 100%;
   }
 }
+.site-header img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.site-footer {
+  text-align: center;
+  padding: 1rem;
+  background: #f1f1f1;
+  font-size: 0.9rem;
+  margin-top: 2rem;
+}
