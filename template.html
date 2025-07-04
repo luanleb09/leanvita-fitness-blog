@@ -1,0 +1,39 @@
+<!-- index.html hoặc post.html đều dùng layout này -->
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LeanVita Blog</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar trái (tags) -->
+    <aside class="sidebar-left">
+      <h3>Chủ đề</h3>
+      <ul id="tag-list"></ul>
+    </aside>
+
+    <!-- Nội dung chính -->
+    <main class="main-content">
+      <h1 id="main-title">LeanVita Blog</h1>
+      <input type="text" id="search-input" placeholder="Tìm kiếm bài viết..." />
+      
+      <div id="posts"></div> <!-- Trang chủ -->
+      <div id="post-page" style="display:none;">
+        <h2 id="post-title"></h2>
+        <div id="post-content"></div>
+      </div>
+    </main>
+
+    <!-- Sidebar phải (quảng cáo) -->
+    <aside class="sidebar-right">
+      <h3>Quảng cáo</h3>
+      <p>Ad content here...</p>
+    </aside>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

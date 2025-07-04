@@ -1,29 +1,39 @@
-
 body {
   margin: 0;
-  font-family: sans-serif;
+  font-family: Arial, sans-serif;
 }
 .container {
   display: flex;
+  min-height: 100vh;
 }
-.sidebar {
+.sidebar-left, .sidebar-right {
   width: 20%;
-  background: #f0f0f0;
   padding: 1rem;
+  background: #f4f4f4;
 }
-.content {
+.main-content {
   width: 60%;
   padding: 1rem;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-.ads {
-  width: 20%;
-  background: #f9f9f9;
-  padding: 1rem;
+  background: #fff;
 }
 .post-card {
   border: 1px solid #ddd;
-  padding: 0.5rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  border-radius: 6px;
+}
+.post-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+  .sidebar-left, .sidebar-right, .main-content {
+    width: 100%;
+  }
 }
