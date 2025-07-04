@@ -1,40 +1,39 @@
+<!-- index.html hoặc post.html đều dùng layout này -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>LeanVita Blog</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <aside class="sidebar" id="menu"></aside>
-    <main class="content">
-      <div id="posts"></div>
+    <!-- Sidebar trái (tags) -->
+    <aside class="sidebar-left">
+      <h3>Chủ đề</h3>
+      <ul id="tag-list"></ul>
+    </aside>
+
+    <!-- Nội dung chính -->
+    <main class="main-content">
+      <h1 id="main-title">LeanVita Blog</h1>
+      <input type="text" id="search-input" placeholder="Tìm kiếm bài viết..." />
+      
+      <div id="posts"></div> <!-- Trang chủ -->
+      <div id="post-page" style="display:none;">
+        <h2 id="post-title"></h2>
+        <div id="post-content"></div>
+      </div>
     </main>
-    <aside class="ads">
-      <h3>Advertisement</h3>
-      <p>Ad content here</p>
+
+    <!-- Sidebar phải (quảng cáo) -->
+    <aside class="sidebar-right">
+      <h3>Quảng cáo</h3>
+      <p>Ad content here...</p>
     </aside>
   </div>
-  <div id="main" style="display: flex; width: 100%;">
-	  <!-- Cột menu (1/5) -->
-	  <aside id="menu" style="width: 20%; padding: 1rem; background: #f0f0f0;">
-		<h3>Tags</h3>
-		<ul id="tag-list"></ul>
-	  </aside>
 
-	  <!-- Cột bài viết (3/5) -->
-	  <section id="posts" style="width: 60%; padding: 1rem; display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
-		<!-- Bài viết sẽ được render ở đây -->
-	  </section>
-
-	  <!-- Cột quảng cáo (1/5) -->
-	  <aside style="width: 20%; padding: 1rem; background: #f9f9f9;">
-		<h3>Ad space</h3>
-		<p>📢 Your ad here</p>
-	  </aside>
-	</div>
   <script src="script.js"></script>
 </body>
 </html>
