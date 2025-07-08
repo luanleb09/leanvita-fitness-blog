@@ -1,110 +1,440 @@
-/* Reset cơ bản */
+/* General Body & Typography */
 body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #fafafa;
-  color: #333;
+    font-family: 'Open Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #F2F2F2; /* Màu nền nhẹ nhàng */
+    color: #555555;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+a {
+    text-decoration: none;
+    color: #2196F3; /* Màu xanh dương cho liên kết */
+}
+
+a:hover {
+    color: #4CAF50; /* Hover đổi màu xanh lá */
+    text-decoration: underline;
+}
+
+h1, h2, h3 {
+    color: #333333; /* Màu chữ đậm cho tiêu đề */
+    margin-top: 0;
+}
+
+h1 a {
+    color: #333333;
+}
+
+h1 a:hover {
+    color: #4CAF50;
+    text-decoration: none;
 }
 
 /* Header */
-.site-header img {
-  width: 100%;
-  height: auto;
-  display: block;
-  cursor: pointer;
+header {
+    background-color: #FFFFFF;
+    padding: 20px 0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+header h1 {
+    margin: 0;
+    font-size: 2.2em;
+    float: left;
+}
+
+header nav {
+    float: right;
+    margin-top: 5px;
+}
+
+header nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+header nav ul li {
+    display: inline-block;
+    margin-left: 25px;
+}
+
+header nav ul li a {
+    color: #555555;
+    font-weight: 600;
+    font-size: 1.1em;
+    padding: 5px 0;
+    transition: color 0.3s ease;
+}
+
+header nav ul li a:hover {
+    color: #4CAF50;
+}
+
+/* Main Content Layout (3 columns) */
+.main-content {
+    display: flex;
+    flex-wrap: wrap; /* Cho phép các cột xuống dòng trên màn hình nhỏ */
+    gap: 20px; /* Khoảng cách giữa các cột */
+    padding: 30px 20px;
+}
+
+.left-sidebar {
+    flex: 0 0 250px; /* Cố định chiều rộng cột trái */
+    background-color: #FFFFFF;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.post-list {
+    flex: 1; /* Cột giữa chiếm phần còn lại */
+    background-color: #FFFFFF;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.right-sidebar {
+    flex: 0 0 300px; /* Cố định chiều rộng cột phải cho ads */
+    background-color: #FFFFFF;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+/* Sidebar Sections (Left) */
+.menu-section, .tag-section {
+    margin-bottom: 30px;
+}
+
+.menu-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.menu-section ul li {
+    margin-bottom: 10px;
+}
+
+.menu-section ul li a {
+    display: block;
+    padding: 8px 10px;
+    background-color: #F8F8F8;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.menu-section ul li a:hover {
+    background-color: #E0F2F7; /* Màu xanh nhạt khi hover */
+    color: #2196F3;
+}
+
+.tag-section .tags a {
+    display: inline-block;
+    background-color: #E0F2F7;
+    color: #2196F3;
+    padding: 7px 12px;
+    margin: 5px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.tag-section .tags a:hover {
+    background-color: #4CAF50;
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+/* Post List (Middle Column) */
+.post-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 cột cho bài viết */
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.post-item {
+    background-color: #FFFFFF;
+    border: 1px solid #EEEEEE;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.post-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.post-item img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+}
+
+.post-item h3 {
+    margin: 15px;
+    font-size: 1.3em;
+}
+
+.post-item h3 a {
+    color: #333333;
+    transition: color 0.3s ease;
+}
+
+.post-item h3 a:hover {
+    color: #2196F3;
+    text-decoration: none;
+}
+
+.post-item p {
+    margin: 0 15px 15px;
+    font-size: 0.95em;
+    color: #666666;
+}
+
+.post-item .read-more {
+    display: inline-block;
+    background-color: #4CAF50; /* Nút đọc thêm màu xanh lá */
+    color: #FFFFFF;
+    padding: 8px 15px;
+    border-radius: 5px;
+    margin: 0 15px 15px;
+    transition: background-color 0.3s ease;
+}
+
+.post-item .read-more:hover {
+    background-color: #8BC34A; /* Màu xanh lá nhạt hơn khi hover */
+    text-decoration: none;
+}
+
+/* Additional Content (Gallery & Form) */
+.additional-content {
+    margin-top: 40px;
+    padding-top: 30px;
+    border-top: 1px solid #EEEEEE;
+}
+
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+    margin-bottom: 30px;
+}
+
+.gallery img {
+    width: 100%;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.gallery img:hover {
+    transform: scale(1.05);
+}
+
+.newsletter-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.newsletter-form input[type="email"] {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #DDDDDD;
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.newsletter-form button {
+    background-color: #FFC107; /* Nút đăng ký màu cam */
+    color: #FFFFFF;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+.newsletter-form button:hover {
+    background-color: #FF9800; /* Màu cam đậm hơn khi hover */
+}
+
+/* Ad Section (Right Sidebar) */
+.ad-section .ad-placeholder {
+    background-color: #F8F8F8;
+    border: 1px dashed #DDDDDD;
+    text-align: center;
+    padding: 20px;
+    margin-bottom: 20px;
+    font-style: italic;
+    color: #888888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 250px; /* Kích thước tối thiểu cho quảng cáo */
+    flex-direction: column;
+}
+
+.ad-section .ad-placeholder.small-ad {
+    min-height: 150px;
 }
 
 /* Footer */
-.site-footer {
-  text-align: center;
-  padding: 1rem;
-  background: #f1f1f1;
-  font-size: 0.9rem;
-  color: #666;
-  margin-top: 2rem;
-  border-top: 1px solid #ddd;
+footer {
+    background-color: #333333;
+    color: #EEEEEE;
+    padding: 20px 0;
+    text-align: center;
+    margin-top: 30px;
+    font-size: 0.9em;
 }
 
-/* Container 3 cột */
-.container {
-  display: flex;
-  max-width: 1200px;
-  margin: auto;
-  padding: 1rem;
-  gap: 1rem;
+footer .footer-links a {
+    color: #EEEEEE;
+    margin: 0 10px;
+    transition: color 0.3s ease;
 }
 
-/* Sidebar trái - tag/menu */
-.sidebar-left {
-  flex: 1;
-  max-width: 20%;;
-  background: #f9f9f9;
-  padding: 1rem;
-  border-right: 1px solid #ddd;
+footer .footer-links a:hover {
+    color: #4CAF50;
 }
 
-/* Nội dung chính */
-.main-content {
-  flex: 3;
-  background: #fff;
-  padding: 1rem;
-  border-radius: 6px;
-  box-shadow: 0 0 4px rgba(0,0,0,0.05);
+/* Additional CSS for dynamic content */
+.back-button {
+    background-color: #2196F3;
+    color: #FFFFFF;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease;
 }
 
-/* Sidebar phải - quảng cáo */
-.sidebar-right {
-  flex: 1;
-  max-width: 20%;
-  background: #f9f9f9;
-  padding: 1rem;
-  border-left: 1px solid #ddd;
+.back-button:hover {
+    background-color: #1976D2;
 }
 
-/* Bài viết */
-.post-card {
-  border: 1px solid #ccc;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  background: #fff;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: box-shadow 0.2s;
-}
-
-.post-card:hover {
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.post-card img {
-  width: 100%;
-  height: 150px;
-  object-fit: cover;
-  border-radius: 4px;
-}
-
-#search-input {
-  width: 100%;
-  padding: 0.5rem;
-  margin-bottom: 1rem;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-}
-
-/* Responsive cho mobile */
-@media (max-width: 768px) {
-  .container {
-    flex-direction: column;
-  }
-
-  .sidebar-left,
-  .sidebar-right,
-  .main-content {
+#post-detail-content img {
     max-width: 100%;
-    width: 100%;
-  }
-
-  .post-card img {
     height: auto;
-  }
+    display: block;
+    margin: 15px auto;
+    border-radius: 8px;
+}
+
+#post-detail-content p {
+    margin-bottom: 1em;
+}
+
+#post-detail-content ul,
+#post-detail-content ol {
+    margin-left: 20px;
+    margin-bottom: 1em;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 992px) {
+    .main-content {
+        flex-direction: column; /* Chuyển sang bố cục cột đơn */
+    }
+
+    .left-sidebar, .right-sidebar, .post-list {
+        flex: 1 1 100%; /* Chiếm toàn bộ chiều rộng */
+        max-width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .post-list {
+        order: 2; /* Đặt cột bài viết ở giữa */
+    }
+    
+    .left-sidebar {
+        order: 1; /* Cột menu & tag lên đầu */
+    }
+
+    .right-sidebar {
+        order: 3; /* Cột quảng cáo xuống cuối */
+    }
+
+    .post-grid {
+        grid-template-columns: 1fr; /* Bài viết thành 1 cột */
+    }
+
+    header h1 {
+        float: none;
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    header nav {
+        float: none;
+        text-align: center;
+    }
+
+    header nav ul li {
+        display: block; /* Menu items stack vertically */
+        margin: 0;
+    }
+
+    header nav ul li a {
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+    }
+
+    header nav ul li:last-child a {
+        border-bottom: none;
+    }
+    
+    .newsletter-form {
+        flex-direction: column;
+    }
+
+    .newsletter-form button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.8em;
+    }
+
+    .post-item h3 {
+        font-size: 1.1em;
+    }
+    
+    .ad-section .ad-placeholder {
+        padding: 15px;
+        min-height: 200px;
+    }
+    .ad-section .ad-placeholder.small-ad {
+        min-height: 100px;
+    }
 }
